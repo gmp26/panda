@@ -132,7 +132,7 @@ processAll srcDir dstDir (sfp:sfps) = do
 --  else getDirectoryContents fp >>=
 --       mapM_ (mapDir proc . (fp </>)) . filter (`notElem` [".", ".."])
 
-main :: IO()
+main :: IO ()
 main = do
 
   argv <- getArgs
