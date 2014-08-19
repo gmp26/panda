@@ -1,46 +1,100 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DefaultSignatures #-}
-{-# LANGUAGE TypeSynonymInstances #-}
+
 module Data.Metadata 
 (
   getMeta ,
   putMeta
 ) where
 
+import Control.Applicative
+import Control.Monad
 import qualified Data.ByteString.Char8 as B
 import Data.Map (Map, toList)
 import Data.Maybe
 import Data.Yaml
+import Data.Vector as V
 import GHC.Generics
 
 --
 -- NOTE: recode using optional fromJSON constructors
 --
-data Meta = Object deriving (Generic, Show)
+data Meta = Meta { 
+    alias :: String,              -- Name of the tab which displays this file in HTML page
+    clearance :: Int,             -- clearance level of this file (higher = more public)
+    contributor :: String,        -- Name of contributor 
+    editor :: String,             -- Name of editor
+    source :: String,             -- source to acknowledge 
+    layout :: String,             -- the HTML or TeX id of the layout template
+    keywords :: Array,            -- of keywords
+    year :: String,               -- of a paper
+    paper :: String,              -- name of a paper
+    qno :: Int,                   -- question number
+    stids1 :: Array,              -- of Station ids
+    stids2 :: Array,              -- of Station ids
+    pvids1 :: Array,              -- of Pervasive ids
+    pvids2 :: Array               -- of Pervasive ids
+  } deriving Show
 
---data Meta = Meta { 
---    alias :: String,              -- Name of the tab which displays this file in HTML page
---    clearance :: Int,             -- clearance level of this file (higher = more public)
---    contributor :: String,           -- Name of contributor(s) 
---    editor :: String,             -- Name of editor(s)
---    source :: String,             -- source to acknowledge 
---    layout :: String,             -- the HTML or TeX id of the layout template
---    keywords :: Array,            -- of keywords
---    year :: String,               -- of a paper
---    paper :: String,              -- name of a paper
---    qno :: Int,                   -- question number
---    stids1 :: Array,              -- of Station ids
---    stids2 :: Array,              -- of Station ids
---    pvids1 :: Array,              -- of Pervasive ids
---    pvids2 :: Array              -- of Pervasive ids
---  } deriving (Generic, Show)
+instance FromJSON Meta where
+  parseJSON (Object v) = Meta <$>
+                            v .:? "alias" .!= "" <*>
+                            v .:? "clearance" .!= 0 <*>
+                            v .:? "contributor" .!= "" <*>
+                            v .:? "editor" .!= "" <*>
+                            v .:? "source" .!= "" <*>
+                            v .:? "layout" .!= "" <*>
+                            v .:? "keywords" .!= V.empty <*>
+                            v .:? "year" .!= "" <*>
+                            v .:? "paper" .!= "" <*>
+                            v .:? "qno" .!= 0 <*>
+                            v .:? "stids1" .!= V.empty <*>
+                            v .:? "stids2" .!= V.empty <*>
+                            v .:? "pvids1" .!= V.empty <*>
+                            v .:? "pvids2" .!= V.empty
 
-instance FromJSON Meta
-instance ToJSON Meta
+  -- A non-Object value is of the wrong type, so use mzero to fail.
+  parseJSON _          = mzero
+
+instance ToJSON Meta where
+  toJSON (Meta 
+            alias
+            clearance
+            contributor 
+            editor
+            source
+            layout
+            keywords
+            year
+            paper
+            qno
+            stids1
+            stids2
+            pvids1
+            pvids2 
+          ) = object [
+            "alias" .= alias,
+            "clearance" .= clearance,
+            "contributor" .= contributor,
+            "editor" .= editor,
+            "source" .= source,
+            "layout" .= layout,
+            "keywords" .= keywords,
+            "year" .= year,
+            "paper" .= paper,
+            "qno" .= qno,
+            "stids1" .= stids1,
+            "stids2" .= stids2,
+            "pvids1" .= pvids1,
+            "pvids2" .= pvids2   
+          ]
 
 getMeta :: B.ByteString -> Maybe Meta
 getMeta s = decode s
+
+getEitherMeta :: B.ByteString -> Either String Meta
+getEitherMeta = decodeEither
 
 putMeta :: Maybe Meta -> String
 putMeta (Just meta) = B.unpack $ encode meta
