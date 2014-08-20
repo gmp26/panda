@@ -157,7 +157,7 @@ main = do
   processAll srcdir dstdir srcFiles
 
   -- YAML TEST
-  content <- readFile "test/test.yaml"
+  content <- readFile "test/test2.yaml"
   let meta = getMeta (B.pack content)
   putStrLn $ putMeta meta
 

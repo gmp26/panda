@@ -58,40 +58,25 @@ instance FromJSON Meta where
   parseJSON _          = mzero
 
 instance ToJSON Meta where
-  toJSON (Meta 
-            alias
-            clearance
-            contributor 
-            editor
-            source
-            layout
-            keywords
-            year
-            paper
-            qno
-            stids1
-            stids2
-            pvids1
-            pvids2 
-          ) = object [
-            "alias" .= alias,
-            "clearance" .= clearance,
-            "contributor" .= contributor,
-            "editor" .= editor,
-            "source" .= source,
-            "layout" .= layout,
-            "keywords" .= keywords,
-            "year" .= year,
-            "paper" .= paper,
-            "qno" .= qno,
-            "stids1" .= stids1,
-            "stids2" .= stids2,
-            "pvids1" .= pvids1,
-            "pvids2" .= pvids2   
+  toJSON m = object [
+            "alias" .= alias m,
+            "clearance" .= clearance m,
+            "contributor" .= contributor m,
+            "editor" .= editor m,
+            "source" .= source m,
+            "layout" .= layout m,
+            "keywords" .= keywords m,
+            "year" .= year m,
+            "paper" .= paper m,
+            "qno" .= qno m,
+            "stids1" .= stids1 m,
+            "stids2" .= stids2 m,
+            "pvids1" .= pvids1 m,
+            "pvids2" .= pvids2 m  
           ]
 
 getMeta :: B.ByteString -> Maybe Meta
-getMeta s = decode s
+getMeta = decode
 
 getEitherMeta :: B.ByteString -> Either String Meta
 getEitherMeta = decodeEither
