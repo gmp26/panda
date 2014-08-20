@@ -7,7 +7,8 @@ module Main where
 
 -- we'll use Foldable and Traversable instead of the Prelude defs
 import Prelude hiding (
-  forM , forM_ , mapM , mapM_ , msum , sequence , sequence_ , concat, elem, notElem)
+  forM , forM_ , mapM , mapM_ , msum , sequence , sequence_ , 
+  concat, elem, notElem)
 import  Data.List hiding ( 
   all , and , any , concat , concatMap , elem , filter ,
   find , foldl , foldl' , foldl1 , foldr , foldr1 ,
@@ -151,13 +152,13 @@ main = do
     then mapM_ putStrLn srcFiles
     else return ()
 
-  --let dstFiles = destPaths srcdir dstdir srcFiles
-  --mapM_ putStrLn dstFiles
-
   processAll srcdir dstdir srcFiles
 
   -- YAML TEST
   content <- readFile "test/test2.yaml"
-  let meta = getMeta (B.pack content)
-  putStrLn $ putMeta meta
+
+  case getEitherMeta (B.pack content) of
+    Left s -> putStrLn s
+    Right meta -> putStrLn . putMeta $ Just meta  
+
 

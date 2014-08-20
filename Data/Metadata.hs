@@ -5,6 +5,7 @@
 module Data.Metadata 
 (
   getMeta ,
+  getEitherMeta ,
   putMeta
 ) where
 
@@ -21,38 +22,38 @@ import GHC.Generics
 -- NOTE: recode using optional fromJSON constructors
 --
 data Meta = Meta { 
-    alias :: String,              -- Name of the tab which displays this file in HTML page
-    clearance :: Int,             -- clearance level of this file (higher = more public)
-    contributor :: String,        -- Name of contributor 
-    editor :: String,             -- Name of editor
-    source :: String,             -- source to acknowledge 
-    layout :: String,             -- the HTML or TeX id of the layout template
-    keywords :: Array,            -- of keywords
-    year :: String,               -- of a paper
-    paper :: String,              -- name of a paper
-    qno :: Int,                   -- question number
-    stids1 :: Array,              -- of Station ids
-    stids2 :: Array,              -- of Station ids
-    pvids1 :: Array,              -- of Pervasive ids
-    pvids2 :: Array               -- of Pervasive ids
+    alias :: Maybe String,        -- Name of the tab which displays this file in HTML page
+    clearance :: Maybe Int,             -- clearance level of this file (higher = more public)
+    contributor :: Maybe String,        -- Name of contributor 
+    editor :: Maybe String,             -- Name of editor
+    source :: Maybe String,             -- source to acknowledge 
+    layout :: Maybe String,             -- the HTML or TeX id of the layout template
+    keywords :: Maybe Array,            -- of keywords
+    year :: Maybe String,               -- of a paper
+    paper :: Maybe String,              -- name of a paper
+    qno :: Maybe Int,                   -- question number
+    stids1 :: Maybe Array,              -- of Station ids
+    stids2 :: Maybe Array,              -- of Station ids
+    pvids1 :: Maybe Array,              -- of Pervasive ids
+    pvids2 :: Maybe Array               -- of Pervasive ids
   } deriving Show
 
 instance FromJSON Meta where
   parseJSON (Object v) = Meta <$>
-                            v .:? "alias" .!= "" <*>
-                            v .:? "clearance" .!= 0 <*>
-                            v .:? "contributor" .!= "" <*>
-                            v .:? "editor" .!= "" <*>
-                            v .:? "source" .!= "" <*>
-                            v .:? "layout" .!= "" <*>
-                            v .:? "keywords" .!= V.empty <*>
-                            v .:? "year" .!= "" <*>
-                            v .:? "paper" .!= "" <*>
-                            v .:? "qno" .!= 0 <*>
-                            v .:? "stids1" .!= V.empty <*>
-                            v .:? "stids2" .!= V.empty <*>
-                            v .:? "pvids1" .!= V.empty <*>
-                            v .:? "pvids2" .!= V.empty
+                            v .:? "alias" .!= Nothing <*>
+                            v .:? "clearance" .!= Nothing <*>
+                            v .:? "contributor" .!= Nothing <*>
+                            v .:? "editor" .!= Nothing <*>
+                            v .:? "source" .!= Nothing <*>
+                            v .:? "layout" .!= Nothing <*>
+                            v .:? "keywords" .!= Nothing <*>
+                            v .:? "year" .!= Nothing <*>
+                            v .:? "paper" .!= Nothing <*>
+                            v .:? "qno" .!= Nothing <*>
+                            v .:? "stids1" .!= Nothing <*>
+                            v .:? "stids2" .!= Nothing <*>
+                            v .:? "pvids1" .!= Nothing <*>
+                            v .:? "pvids2" .!= Nothing
 
   -- A non-Object value is of the wrong type, so use mzero to fail.
   parseJSON _          = mzero
@@ -83,7 +84,9 @@ getEitherMeta = decodeEither
 
 putMeta :: Maybe Meta -> String
 putMeta (Just meta) = B.unpack $ encode meta
-putMeta _ = "error"
+putMeta _ = ""
+
+
 
 
 
