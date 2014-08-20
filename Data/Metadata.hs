@@ -38,6 +38,7 @@ data Meta = Meta {
   } deriving Show
 
 instance FromJSON Meta where
+  parseJSON :: FromJSON a => Value -> Parser a
   parseJSON (Object v) = Meta <$>
                             v .:? "alias" .!= "" <*>
                             v .:? "clearance" .!= 0 <*>
@@ -58,6 +59,7 @@ instance FromJSON Meta where
   parseJSON _          = mzero
 
 instance ToJSON Meta where
+  toJSON :: ToJSON a => a -> Value
   toJSON m = object [
             "alias" .= alias m,
             "clearance" .= clearance m,
