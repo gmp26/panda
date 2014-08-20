@@ -158,6 +158,9 @@ main = do
 
   -- YAML TEST
   content <- readFile "test/test2.yaml"
-  let meta = getMeta (B.pack content)
-  putStrLn $ putMeta meta
+  case getEitherMeta (B.pack content) of
+    Left e -> putStrLn e
+    Right meta -> putStrLn $ show meta
+
+
 

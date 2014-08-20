@@ -1,11 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DefaultSignatures #-}
 
 module Data.Metadata 
 (
   getMeta ,
-  putMeta
+  putMeta ,
+  getEitherMeta
 ) where
 
 import Control.Applicative
@@ -21,45 +20,44 @@ import GHC.Generics
 -- NOTE: recode using optional fromJSON constructors
 --
 data Meta = Meta { 
-    alias :: String,              -- Name of the tab which displays this file in HTML page
-    clearance :: Int,             -- clearance level of this file (higher = more public)
-    contributor :: String,        -- Name of contributor 
-    editor :: String,             -- Name of editor
-    source :: String,             -- source to acknowledge 
-    layout :: String,             -- the HTML or TeX id of the layout template
-    keywords :: Array,            -- of keywords
-    year :: String,               -- of a paper
-    paper :: String,              -- name of a paper
-    qno :: Int,                   -- question number
-    stids1 :: Array,              -- of Station ids
-    stids2 :: Array,              -- of Station ids
-    pvids1 :: Array,              -- of Pervasive ids
-    pvids2 :: Array               -- of Pervasive ids
+    alias :: Maybe String,        -- Name of the tab which displays this file in HTML page
+    clearance :: Maybe Int,             -- clearance level of this file (higher = more public)
+    contributor :: Maybe String,        -- Name of contributor 
+    editor :: Maybe String,             -- Name of editor
+    source :: Maybe String,             -- source to acknowledge 
+    layout :: Maybe String,             -- the HTML or TeX id of the layout template
+    keywords :: Maybe Array,            -- of keywords
+    year :: Maybe String,               -- of a paper
+    paper :: Maybe String,              -- name of a paper
+    qno :: Maybe Int,                   -- question number
+    stids1 :: Maybe Array,              -- of Station ids
+    stids2 :: Maybe Array,              -- of Station ids
+    pvids1 :: Maybe Array,              -- of Pervasive ids
+    pvids2 :: Maybe Array               -- of Pervasive ids
   } deriving Show
 
 instance FromJSON Meta where
-  parseJSON :: FromJSON a => Value -> Parser a
   parseJSON (Object v) = Meta <$>
-                            v .:? "alias" .!= "" <*>
-                            v .:? "clearance" .!= 0 <*>
-                            v .:? "contributor" .!= "" <*>
-                            v .:? "editor" .!= "" <*>
-                            v .:? "source" .!= "" <*>
-                            v .:? "layout" .!= "" <*>
-                            v .:? "keywords" .!= V.empty <*>
-                            v .:? "year" .!= "" <*>
-                            v .:? "paper" .!= "" <*>
-                            v .:? "qno" .!= 0 <*>
-                            v .:? "stids1" .!= V.empty <*>
-                            v .:? "stids2" .!= V.empty <*>
-                            v .:? "pvids1" .!= V.empty <*>
-                            v .:? "pvids2" .!= V.empty
+                            v .: "alias" <*>
+                            v .: "clearance" <*> 
+                            v .: "contributor" <*>
+                            v .: "editor" <*>
+                            v .: "source" <*>
+                            v .: "layout" <*>
+                            v .: "keywords" <*>
+                            v .: "year" <*>
+                            v .: "paper" <*>
+                            v .: "qno" <*>
+                            v .: "stids1" <*>
+                            v .: "stids2" <*>
+                            v .: "pvids1" <*>
+                            v .: "pvids2"
 
   -- A non-Object value is of the wrong type, so use mzero to fail.
   parseJSON _          = mzero
 
 instance ToJSON Meta where
-  toJSON :: ToJSON a => a -> Value
+  -- toJSON :: ToJSON Meta => Meta -> Value
   toJSON m = object [
             "alias" .= alias m,
             "clearance" .= clearance m,
