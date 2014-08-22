@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DefaultSignatures #-}
 
 module Data.Metadata 
 (
   getMeta ,
-  putMeta ,
-  getEitherMeta
+  getEitherMeta ,
+  putMeta
 ) where
 
 import Control.Applicative
@@ -38,26 +40,25 @@ data Meta = Meta {
 
 instance FromJSON Meta where
   parseJSON (Object v) = Meta <$>
-                            v .: "alias" <*>
-                            v .: "clearance" <*> 
-                            v .: "contributor" <*>
-                            v .: "editor" <*>
-                            v .: "source" <*>
-                            v .: "layout" <*>
-                            v .: "keywords" <*>
-                            v .: "year" <*>
-                            v .: "paper" <*>
-                            v .: "qno" <*>
-                            v .: "stids1" <*>
-                            v .: "stids2" <*>
-                            v .: "pvids1" <*>
-                            v .: "pvids2"
+                            v .:? "alias" .!= Nothing <*>
+                            v .:? "clearance" .!= Nothing <*>
+                            v .:? "contributor" .!= Nothing <*>
+                            v .:? "editor" .!= Nothing <*>
+                            v .:? "source" .!= Nothing <*>
+                            v .:? "layout" .!= Nothing <*>
+                            v .:? "keywords" .!= Nothing <*>
+                            v .:? "year" .!= Nothing <*>
+                            v .:? "paper" .!= Nothing <*>
+                            v .:? "qno" .!= Nothing <*>
+                            v .:? "stids1" .!= Nothing <*>
+                            v .:? "stids2" .!= Nothing <*>
+                            v .:? "pvids1" .!= Nothing <*>
+                            v .:? "pvids2" .!= Nothing
 
   -- A non-Object value is of the wrong type, so use mzero to fail.
   parseJSON _          = mzero
 
 instance ToJSON Meta where
-  -- toJSON :: ToJSON Meta => Meta -> Value
   toJSON m = object [
             "alias" .= alias m,
             "clearance" .= clearance m,
@@ -84,6 +85,8 @@ getEitherMeta = decodeEither
 putMeta :: Maybe Meta -> String
 putMeta (Just meta) = B.unpack $ encode meta
 putMeta _ = "error"
+
+
 
 
 
