@@ -44,9 +44,28 @@ build-type:          Simple
 -- Extra files to be distributed with the package, such as examples or a 
 -- README.
 -- extra-source-files:  
+extra-source-files:
+  test/test.yaml
+  test/test2.yaml
 
 -- Constraint on the version of Cabal needed to build this package.
-cabal-version:       >=1.10
+cabal-version:       >=1.18
+
+Source-Repository head
+  Type:     git
+  Location: git://github.com/gmp26/panda.git
+
+Library
+  Ghc-Options:    -Wall
+  Ghc-Prof-Options: -auto-all -caf-all
+  Hs-Source-Dirs: src
+
+  Exposed-Modules:
+    Data.Yaml.YDoc
+
+  -- Base language which the package is written in.
+  default-language:    Haskell2010
+
 
 executable panda
 
@@ -82,7 +101,7 @@ executable panda
 
 
   -- Directories containing source files.
-  hs-source-dirs:     .   
+  hs-source-dirs:     src   
 
   -- Base language which the package is written in.
   default-language:    Haskell2010

@@ -22,8 +22,8 @@ instance Show (YDoc yval) where
 
   show (YDoc yval) = show $ yamlDoc yval where
 
+    -- Convert a YamlLight value to a pretty print Doc
     yamlDoc :: YamlLight -> Doc
-    -- ^Convert a YamlLight value to a pretty print Doc
     yamlDoc yval =
       case yval of
         (YStr bs)   -> text $ B.unpack bs
