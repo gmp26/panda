@@ -32,7 +32,7 @@ import Text.Pandoc.Options
 import Text.Pandoc.Readers.Markdown
 import Text.Pandoc.Writers.HTML
 
-import Data.Metadata
+import Panda.Metadata
 
 data OptionFlag = Verbose  | Version
   deriving (Show, Eq)

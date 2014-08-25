@@ -2,7 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DefaultSignatures #-}
 
-module Data.Metadata 
+module Panda.Metadata 
 (
   getMeta ,
   getEitherMeta ,
