@@ -105,7 +105,12 @@ processAll srcDir dstDir (sfp:sfps) = do
 main :: IO ()
 main = do
 
-  print =<< cmdArgsRun pandaOptions
+  --print =<< cmdArgsRun pandaOptions
+
+  -- If the user did not specify any arguments, pretend that "--help" was given
+  args <- getArgs
+  opts <- (if null args then withArgs ["--help"] else id) $ cmdArgsRun pandaOptions
+  optionHandler opts
 
 {-
   argv <- getArgs
