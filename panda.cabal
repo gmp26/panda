@@ -73,6 +73,7 @@ executable panda
                       blaze-html >= 0.7 && < 0.8,
                       Glob >=0.7 && <0.8,
                       yaml >= 0.8 && <0.9,
+                      lens >= 4.3 && <4.4,
                       vector >= 0.10 && < 0.11
 
   -- Directories containing source files.

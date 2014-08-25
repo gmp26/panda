@@ -1,3 +1,8 @@
 .cabal-sandbox/
 cabal.sandbox.config
 dist/
+hakyll/
+*.dyn_hi
+*.dyn_o
+*.hi
+*.o

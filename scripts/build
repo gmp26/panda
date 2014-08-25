@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Calls ghc with options to references modules installed in the local sandbox
+
+DIR=$PWD
+TARGET="cabal.sandbox.config"
+while [ ! -e $DIR/$TARGET -a $DIR != "/" ]; do
+  DIR=$(dirname $DIR)
+done
+if test $DIR != "/"; then
+  DB=$(sed -ne '/^package-db: */{s///p;q;}' "$DIR/$TARGET")
+  ghc -no-user-package-db -package-db="$DB" "$@"
+else
+  ghc "$@"
+fi
